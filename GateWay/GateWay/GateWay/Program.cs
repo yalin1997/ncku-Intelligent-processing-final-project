@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using MQTTnet.AspNetCore;
 
 namespace GateWay
 {
@@ -20,7 +23,15 @@ namespace GateWay
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    webBuilder.ConfigureKestrel(serverOptions =>
+                    {
+                        serverOptions.Limits.MaxConcurrentConnections = 100;
+                        // Set properties and call methods on options
+                        //serverOptions.Listen(IPAddress.Loopback , 5001);
+                        //serverOptions.ListenAnyIP(1883, l => l.UseMqtt()); // MQTT pipeline
+                        //serverOptions.ListenAnyIP(5001); // Default HTTP pipeline
+                    })
+                    .UseStartup<Startup>();
                 });
     }
 }
