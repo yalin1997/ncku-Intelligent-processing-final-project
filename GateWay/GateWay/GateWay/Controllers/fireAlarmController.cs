@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Text;
 using GateWay.Models;
 using GateWay.typeCode;
+using GateWay.UtilComponent;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -13,21 +14,45 @@ namespace GateWay.Controllers
     public class fireAlarmController : ControllerBase
     {
         private readonly IHttpClientFactory _clientFactory;
-        public fireAlarmController(IHttpClientFactory clientFactory)
+        private readonly IAlarmControl _alarmControl;
+        private readonly IAuthenticateControl _authControl;
+        public fireAlarmController(IHttpClientFactory clientFactory , IAlarmControl fireAlarmControl, IAuthenticateControl authControl)
         {
             _clientFactory = clientFactory;
+            _alarmControl = fireAlarmControl;
+            _authControl = authControl;
         }
-        [HttpGet]
-        public ObjectResult getFireAlarm()//(fireAlarmModel fireAlarm)
+        [HttpPost]
+        public ObjectResult getFireAlarm(accountPasswordModel deviceMessage)//(fireAlarmModel fireAlarm)
         {
-            //if(SendToCloud("azure/cloud/api", (int)messageCode.gateWayCode.fireAlarm, DateTime.Now))
-            //{
-                return new OkObjectResult(new gateWayMessageModel { gateWayId = typeCode.GateWay.gateWayId, content = "true" });
-            //}
-            //return new OkObjectResult(new gateWayMessageModel { gateWayId = typeCode.GateWay.gateWayId, content = "false" });
+            if (_authControl.authDeviceInfo(deviceMessage))
+            {
+                if (SendAlarmToCloud("azure/cloud/api", (int)messageCode.gateWayCode.fireAlarm, DateTime.Now))
+                {
+                    return new OkObjectResult(new gateWayMessageModel { gateWayId = typeCode.GateWay.gateWayId, messageType = (int)messageCode.gateWayCode.alarmResponse , content = "true" });
+                }
+            }
+            return new ObjectResult("auth error");
+        }
+        [HttpPost]
+        public ObjectResult SensorAlarm(accountPasswordModel deviceMessage)
+        {
+            if (_authControl.authDeviceInfo(deviceMessage))
+            {
+                if (_alarmControl.isAlarm())
+                {
+                    return new OkObjectResult(new gateWayMessageModel { gateWayId = typeCode.GateWay.gateWayId, messageType = (int)messageCode.gateWayCode.sensorAlarm, content = "true" });
+                }
+                return new OkObjectResult(new gateWayMessageModel { gateWayId = typeCode.GateWay.gateWayId, messageType = (int)messageCode.gateWayCode.sensorAlarm, content = "false" });
+            }
+            return new ObjectResult("auth error");
+        }
+        public ObjectResult sendAlive()
+        {
+            return new OkObjectResult(new gateWayMessageModel { gateWayId = typeCode.GateWay.gateWayId, messageType = (int)messageCode.gateWayCode.alive, content = "true" });
         }
 
-        private bool SendToCloud(string url , int type , DateTime time)
+        private bool SendAlarmToCloud(string url , int type , DateTime time)
         {
             var cloudHttpSender = _clientFactory.CreateClient();
             gateWayMessageModel postData = new gateWayMessageModel() { gateWayId = typeCode.GateWay.gateWayId, messageType = type, messageTime = time };
@@ -45,9 +70,6 @@ namespace GateWay.Controllers
             }
             return false;
         }
-        private void SendToSensor()
-        {
 
-        }
     }
 }

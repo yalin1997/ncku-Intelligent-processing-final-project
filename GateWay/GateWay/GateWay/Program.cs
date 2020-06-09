@@ -25,7 +25,6 @@ namespace GateWay
                 {
                     webBuilder.ConfigureKestrel(serverOptions =>
                     {
-                        serverOptions.Limits.MaxConcurrentConnections = 100;
                         // Set properties and call methods on options
                         //serverOptions.Listen(IPAddress.Loopback , 5001);
                         //serverOptions.ListenAnyIP(1883, l => l.UseMqtt()); // MQTT pipeline

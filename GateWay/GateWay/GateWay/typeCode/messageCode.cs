@@ -11,7 +11,9 @@ namespace GateWay.typeCode
         public enum gateWayCode
         {
             fireAlarm = 1,
-            alive = 2
+            alive = 2,
+            alarmResponse = 3,
+            sensorAlarm = 4
         }
     }
 }
