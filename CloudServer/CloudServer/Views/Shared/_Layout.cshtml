@@ -5,34 +5,69 @@
     <meta name="viewport" content="width=device-width" />
     <title>@ViewBag.Title</title>
     <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/11.0.0/css/fabric.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --nav-bar-padding: 10px;
+            --nav-bar-height: 5vmin;
+            --layout-footer-height: 5vmin;
+            --container-height: calc(100% - var(--nav-bar-height) - 2*var(--nav-bar-padding) - var(--layout-footer-height));
+        }
+        html {
+            height:100%;
+        }
         body {
             background-color: #faf9f8;
             padding: 0;
             margin: 0;
+            height:100%;
+            font-weight: 400;
+            font-family: 'Noto Sans TC', sans-serif !important;
         }
-
         .nav-bar {
-            width: 100%;
-            height: 5vmin;
-            background-color: #ffffff;
+            width: calc(100% - var(--nav-bar-padding) * 2);
+            height: var(--nav-bar-height);
+            background-color: #0f0d16;
+            color:beige;
             padding: 10px;
         }
-
         .nav-title {
             display: inline-block;
+            font-weight: 500;
             font-size: 3vmin;
+            cursor:default;
         }
-
         .nav-toolbox {
             display: inline-block;
             height: auto;
             margin-left: 10px;
+            font-size: 1.8vmin;
         }
-
         .nav-item {
             display: inline-block;
+            padding: 7px;
             height: 100%;
+        }
+            .nav-item a {
+                color: inherit;
+                text-decoration: none;
+            }
+                .nav-item a:hover {
+                    border-bottom: 2px solid beige;
+                }
+        .main-container {
+            height: var(--container-height);
+            overflow-y: auto;
+        }
+        .layout-footer {
+            background-color: #0f0d16;
+            height: var(--layout-footer-height);
+            text-align: center;
+            vertical-align: middle;
+        }
+        .nav-right-toolbox {
+            float: right;
+            font-size: 2vmin;
         }
     </style>
 </head>
@@ -43,12 +78,23 @@
         </div>
         <div class="nav-toolbox">
             <div class="nav-item">
-                儀錶板
+                <a href="@Url.Action("Index", "Home", null)">儀錶板</a>
+            </div>
+            <div class="nav-item">
+                <a href="@Url.Action("Gateways", "Home", null)">虛擬閘道器</a>
+            </div>
+        </div>
+        <div class="nav-right-toolbox">
+            <div class="nav-item">
+                台南市
             </div>
         </div>
     </div>
-    <div>
+    <div class="main-container">
         @RenderBody()
+    </div>
+    <div class="layout-footer">
+        
     </div>
 </body>
 </html>
