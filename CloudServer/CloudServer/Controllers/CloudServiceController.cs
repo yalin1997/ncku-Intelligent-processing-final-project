@@ -22,7 +22,7 @@ namespace CloudServer.Controllers
             _gatewayControl = gatewayControl;
         }
         [HttpPost]
-        public OkObjectResult getFireAlarmGateWay([FromBody]GateWayMessageModel gatewayMessage)
+        public IActionResult  getFireAlarmGateWay([FromBody]GateWayMessageModel gatewayMessage)
         {
             string gateWayId = gatewayMessage.gateWayId;
             GateWayModel alarmGateWay;
@@ -30,17 +30,29 @@ namespace CloudServer.Controllers
             return new OkObjectResult(new GateWayMessageModel { gateWayId = gateWayId, content = "true" });
         }
         [HttpPost]
-        public ObjectResult findGayWay([FromBody]MobileDevicesModel mobile)
+        public IActionResult findGayWay([FromBody]MobileDevicesModel mobile)
         {
             GateWayModel cloesetGateWay;
             cloesetGateWay = _gatewayControl.findClosestGateWay(mobile);
             return new OkObjectResult(new ReturnGateWayModel { gateWayId = cloesetGateWay.gateWayId, messageType = (int)messageCode.gateWayCode.gateWayReponse, gateWayUri = cloesetGateWay.gateWayUri , isAlarm = cloesetGateWay.isAlarm });
         }
         [HttpPost]
-        public ObjectResult gateWayRegister([FromBody]GateWayModel gatewayInfo)
+        public IActionResult gateWayRegister([FromBody]GateWayModel gatewayInfo)
         {
            bool result =  _gatewayControl.gateWayRegister(gatewayInfo);
             return new OkObjectResult(new CloudResponseModel {messageType = (int)messageCode.gateWayCode.registerResponse, content = result.ToString() });
-        } 
+        }
+        [HttpPost]
+        public IActionResult userControlFire(string onFireGateWayId)
+        {
+            GateWayModel alarmGateWay;
+            _gatewayControl.findGateWay(onFireGateWayId, out alarmGateWay);
+            return new OkObjectResult(new ReturnGateWayModel { gateWayId = onFireGateWayId, messageType = (int)messageCode.gateWayCode.gateWayReponse, gateWayUri = alarmGateWay.gateWayUri, isAlarm = alarmGateWay.isAlarm });
+        }
+        [HttpPost]
+        public IActionResult getGateWayList()
+        {
+            return new JsonResult(_gatewayControl.getGateWayList());
+        }
     }
 }

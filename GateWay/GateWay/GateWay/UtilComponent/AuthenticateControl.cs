@@ -14,15 +14,7 @@ namespace GateWay.UtilComponent
         }
         public bool authDeviceInfo(accountPasswordModel deviceInfo)
         {
-            foreach(accountPasswordModel item in memberList)
-            {
-                if (deviceInfo.Auth(item))
-                {
-                    return true;
-                }
-                continue;
-            }
-            return false;
+            return true;
         }
     }
 }
