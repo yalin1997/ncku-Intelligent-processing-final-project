@@ -8,7 +8,7 @@ namespace CloudServer.UtilComponent
 {
     public class GateWayControl : IGateWayControl
     {
-        List<GateWayModel> GateWayList = new List<GateWayModel>();
+        public List<GateWayModel> GateWayList = new List<GateWayModel>();
         public GateWayControl() { }
         public static double calculateDistance(double x1, double y1, double x2, double y2)
             => Math.Sqrt(((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)));
@@ -27,7 +27,20 @@ namespace CloudServer.UtilComponent
             }
             return closestGateWay;
         }
-
+        public bool  findGateWay(string gateWayId , out GateWayModel gateway)
+        {
+            foreach (GateWayModel item in GateWayList)
+            {
+                if (item.gateWayId.Equals(gateWayId))
+                {
+                    gateway = item;
+                    item.isAlarm = true;
+                    return true;
+                }
+            }
+            gateway = new GateWayModel { gateWayId = "-1" };
+            return false;
+        }
         public void setGateWayAlarm(string gateWayId, bool onFire)
         {
             throw new NotImplementedException();
@@ -38,5 +51,14 @@ namespace CloudServer.UtilComponent
             return true;
         }
 
+        public List<GateWayModel> getGateWayList()
+        {
+            return GateWayList;
+        }
+
+        public void removeGateWay(GateWayModel gateway)
+        {
+            GateWayList.Remove(gateway);
+        }
     }
 }

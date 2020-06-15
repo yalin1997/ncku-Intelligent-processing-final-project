@@ -23,14 +23,7 @@ namespace GateWay
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.ConfigureKestrel(serverOptions =>
-                    {
-                        // Set properties and call methods on options
-                        //serverOptions.Listen(IPAddress.Loopback , 5001);
-                        //serverOptions.ListenAnyIP(1883, l => l.UseMqtt()); // MQTT pipeline
-                        //serverOptions.ListenAnyIP(5001); // Default HTTP pipeline
-                    })
-                    .UseStartup<Startup>();
+                    webBuilder.UseStartup<Startup>();
                 });
     }
 }

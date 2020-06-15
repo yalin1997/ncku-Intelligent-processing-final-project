@@ -23,7 +23,7 @@ namespace GateWay.Controllers
             _authControl = authControl;
         }
         [HttpPost]
-        public ObjectResult getFireAlarm(accountPasswordModel deviceMessage)//(fireAlarmModel fireAlarm)
+        public ObjectResult getFireAlarm([FromBody]accountPasswordModel deviceMessage)//(fireAlarmModel fireAlarm)
         {
             if (_authControl.authDeviceInfo(deviceMessage))
             {
@@ -35,7 +35,17 @@ namespace GateWay.Controllers
             return new ObjectResult("auth error");
         }
         [HttpPost]
-        public ObjectResult SensorAlarm(accountPasswordModel deviceMessage)
+        public ObjectResult cloudFireAlarm([FromBody] accountPasswordModel cloudMessage)
+        {
+            if (_authControl.authDeviceInfo(cloudMessage))
+            {
+                _alarmControl.setAlarm();
+                return new OkObjectResult(new gateWayMessageModel { gateWayId = typeCode.GateWay.gateWayId, messageType = (int)messageCode.gateWayCode.alarmResponse, content = "true" });
+            }
+            return new OkObjectResult(new gateWayMessageModel { gateWayId = typeCode.GateWay.gateWayId, messageType = (int)messageCode.gateWayCode.alarmResponse, content = "false" });
+        }
+        [HttpPost]
+        public ObjectResult SensorAlarm([FromBody] accountPasswordModel deviceMessage)
         {
             if (_authControl.authDeviceInfo(deviceMessage))
             {

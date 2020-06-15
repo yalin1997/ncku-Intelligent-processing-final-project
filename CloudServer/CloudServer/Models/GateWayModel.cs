@@ -11,5 +11,6 @@ namespace CloudServer.Models
         public double longitude { get; set; }
         public double latitude { get; set; }
         public string gateWayUri { get; set; }
+        public bool isAlarm { get; set; }
     }
 }
