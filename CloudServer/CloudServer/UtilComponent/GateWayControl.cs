@@ -12,7 +12,8 @@ namespace CloudServer.UtilComponent
 {
     public class GateWayControl : IGateWayControl
     {
-        public List<GateWayModel> GateWayList = new List<GateWayModel>();
+        private Dictionary<string, GateWayModel> GatewayDictionary = new Dictionary<string, GateWayModel>();
+        public IReadOnlyList<GateWayModel> GateWayList { get => GatewayDictionary.Values.ToList(); }
         public GateWayControl() { }
         private double alarmThreshold = 10;
         private readonly IHttpClientFactory _clientFactory;
@@ -92,7 +93,7 @@ namespace CloudServer.UtilComponent
         }
         public bool gateWayRegister(GateWayModel gateWayInfo)
         {
-            GateWayList.Add(gateWayInfo);
+            GatewayDictionary[gateWayInfo.gateWayId] = gateWayInfo;
             return true;
         }
         private bool SendToOtherGateWay(string url, string gateWayId, DateTime time  )
@@ -114,14 +115,14 @@ namespace CloudServer.UtilComponent
             return false;
         }
 
-        public List<GateWayModel> getGateWayList()
+        public IReadOnlyList<GateWayModel> getGateWayList()
         {
             return GateWayList;
         }
 
         public void removeGateWay(GateWayModel gateway)
         {
-            GateWayList.Remove(gateway);
+            GatewayDictionary.Remove(gateway.gateWayId);
         }
     }
 }

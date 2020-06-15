@@ -12,7 +12,7 @@ namespace CloudServer.UtilComponent
         public bool findGateWay(string gateWayId, out GateWayModel gateway);
         public void setGateWayAlarm(string gateWayId, bool onFire);
         public bool gateWayRegister(GateWayModel gateWayInfo);
-        public List<GateWayModel> getGateWayList();
+        public IReadOnlyList<GateWayModel> getGateWayList();
         public void removeGateWay(GateWayModel gateway);
     }
 }

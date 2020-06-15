@@ -39,7 +39,8 @@ namespace CloudServer.Controllers
         [HttpPost]
         public IActionResult gateWayRegister([FromBody]GateWayModel gatewayInfo)
         {
-           bool result =  _gatewayControl.gateWayRegister(gatewayInfo);
+            gatewayInfo.UpdateTime = DateTime.Now;
+            bool result =  _gatewayControl.gateWayRegister(gatewayInfo);
             return new OkObjectResult(new CloudResponseModel {messageType = (int)messageCode.gateWayCode.registerResponse, content = result.ToString() });
         }
         [HttpPost]

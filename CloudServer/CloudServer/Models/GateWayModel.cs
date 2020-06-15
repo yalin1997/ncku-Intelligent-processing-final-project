@@ -12,5 +12,8 @@ namespace CloudServer.Models
         public double latitude { get; set; }
         public string gateWayUri { get; set; }
         public bool isAlarm { get; set; }
+        public DateTime UpdateTime { get; set; } = DateTime.Now;
+
+        public bool isActive { get => (DateTime.Now - UpdateTime).TotalMinutes < 3; }
     }
 }
