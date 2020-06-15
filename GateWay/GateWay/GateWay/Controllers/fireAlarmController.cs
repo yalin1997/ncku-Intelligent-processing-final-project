@@ -35,6 +35,12 @@ namespace GateWay.Controllers
             return new ObjectResult("auth error");
         }
         [HttpPost]
+        public ObjectResult getFireAlarmFromCloud([FromBody] gateWayMessageModel cloudMessage)//(fireAlarmModel fireAlarm)
+        {
+            _alarmControl.setAlarm();
+             return new OkObjectResult(new gateWayMessageModel { gateWayId = typeCode.GateWay.gateWayId, messageType = (int)messageCode.gateWayCode.alarmResponse, content = "true" });
+        }
+        [HttpPost]
         public ObjectResult cloudFireAlarm([FromBody] accountPasswordModel cloudMessage)
         {
             if (_authControl.authDeviceInfo(cloudMessage))

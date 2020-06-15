@@ -37,12 +37,10 @@ namespace CloudServer.Controllers
             return new OkObjectResult(new ReturnGateWayModel { gateWayId = cloesetGateWay.gateWayId, messageType = (int)messageCode.gateWayCode.gateWayReponse, gateWayUri = cloesetGateWay.gateWayUri , isAlarm = cloesetGateWay.isAlarm });
         }
         [HttpPost]
-        public ObjectResult gateWayRsgister([FromBody]GateWayModel gatewayInfo)
+        public ObjectResult gateWayRegister([FromBody]GateWayModel gatewayInfo)
         {
            bool result =  _gatewayControl.gateWayRegister(gatewayInfo);
             return new OkObjectResult(new CloudResponseModel {messageType = (int)messageCode.gateWayCode.registerResponse, content = result.ToString() });
-        }
-
-        
+        } 
     }
 }
