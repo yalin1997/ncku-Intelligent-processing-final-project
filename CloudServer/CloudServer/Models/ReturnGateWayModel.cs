@@ -10,5 +10,6 @@ namespace CloudServer.Models
         public string gateWayId { get; set; }
         public int messageType { get; set; }
         public string gateWayUri { get; set; }
+        public bool isAlarm { get; set; }
     }
 }

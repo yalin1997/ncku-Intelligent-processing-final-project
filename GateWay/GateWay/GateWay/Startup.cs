@@ -59,6 +59,7 @@ namespace GateWay
             services.AddHttpClient();
             services.AddSingleton<IAlarmControl, fireAlarmControl>();
             services.AddSingleton<IAuthenticateControl, AuthenticateControl>();
+            services.AddHealthChecks();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -79,6 +80,7 @@ namespace GateWay
             {
                 endpoints.MapControllers();
                 endpoints.MapMqtt("/mqtt");
+                endpoints.MapHealthChecks("/hc");
             });
 
             app.UseMqttServer(server =>

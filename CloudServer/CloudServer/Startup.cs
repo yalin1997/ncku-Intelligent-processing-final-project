@@ -28,7 +28,10 @@ namespace CloudServer
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews().AddControllersAsServices();
+            services.AddHealthChecks();
+            services.AddHttpClient();
             services.AddSingleton<IGateWayControl , GateWayControl>();
+            services.AddHostedService<TimedHostedService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
