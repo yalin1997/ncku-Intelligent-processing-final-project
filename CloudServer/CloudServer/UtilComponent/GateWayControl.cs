@@ -60,14 +60,10 @@ namespace CloudServer.UtilComponent
         }
         public bool  findGateWay(string gateWayId , out GateWayModel gateway)
         {
-            foreach (GateWayModel item in GateWayList)
+            if (GatewayDictionary.ContainsKey(gateWayId))
             {
-                if (item.gateWayId.Equals(gateWayId))
-                {
-                    gateway = item;
-                    item.isAlarm = true;
-                    return true;
-                }
+                gateway = GatewayDictionary[gateWayId];
+                return true;
             }
             gateway = new GateWayModel { gateWayId = "-1" };
             return false;
@@ -94,15 +90,15 @@ namespace CloudServer.UtilComponent
         public bool gateWayRegister(GateWayModel gateWayInfo)
         {
             GateWayModel gw;
-            bool result =  findGateWay(gateWayInfo.gateWayId, out gw);
-            if(result)
+            if(GatewayDictionary.ContainsKey(gateWayInfo.gateWayId))
             {
-                return gw.isAlarm;
+                GatewayDictionary[gateWayInfo.gateWayId].UpdateTime = DateTime.Now;
+                return GatewayDictionary[gateWayInfo.gateWayId].isAlarm;
             }
             else
             {
                 GatewayDictionary[gateWayInfo.gateWayId] = gateWayInfo;
-                return false ;
+                return false;
             }
         }
         private bool SendToOtherGateWay(string url, string gateWayId, DateTime time  )
