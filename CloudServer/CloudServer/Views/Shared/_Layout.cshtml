@@ -3,7 +3,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>@ViewBag.Title</title>
+    <title>@ViewBag.Title 火災警報系統</title>
     <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/11.0.0/css/fabric.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500&display=swap" />
     <link href="@Url.Content("~/statics/css/loader.css")" rel="stylesheet">
@@ -82,9 +82,9 @@
             <div class="nav-item">
                 <a href="@Url.Action("Index", "Home", null)">儀錶板</a>
             </div>
-            <div class="nav-item">
-                <a href="@Url.Action("Gateways", "Home", null)">虛擬閘道器</a>
-            </div>
+            <!--<div class="nav-item">
+        <a href="@Url.Action("Gateways", "Home", null)">虛擬閘道器</a>
+    </div>-->
         </div>
         <div class="nav-right-toolbox">
             <div class="nav-item">
@@ -96,7 +96,9 @@
         @RenderBody()
     </div>
     <div class="layout-footer">
-        
+        <audio id="alarm-audio">
+            <source src="@Url.Content("~/statics/sound/alarm-web.mp3")" type="audio/mp3" />
+        </audio>
     </div>
 </body>
 </html>

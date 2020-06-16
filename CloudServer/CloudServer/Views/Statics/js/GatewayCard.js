@@ -76,6 +76,10 @@
         return this._iconColor;
     }
 
+    get information() {
+        return this._information;
+    }
+
     setInformation(values) {
         while (this._tbody.firstChild)
             this._tbody.removeChild(this._tbody.firstChild);
@@ -83,6 +87,15 @@
         values.forEach(element => {
             this._tbody.appendChild(this.createInformationRow(element.key, element.value))
         });
+
+        this._information = values;
+
+        const event = new CustomEvent("refresh", {
+            information: values,
+            iconColor: this._iconColor
+        });
+
+        this.dispatchEvent(event);
     }
 }
 

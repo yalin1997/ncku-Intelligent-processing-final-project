@@ -50,8 +50,14 @@
                 box-shadow: 0 6.4px 14.4px 0 rgba(0,0,0,.132),0 1.2px 3.6px 0 rgba(0,0,0,.108);
             }
     </style>
+    <link href="@Url.Content("~/statics/css/PopupWindow.css")" rel="stylesheet" />
+    <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js" integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA==" crossorigin=""></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin="" />
 
     <script src="@Url.Content("~/statics/js/GatewayCard.js")"></script>
+    <script src="@Url.Content("~/statics/js/PopupWindow.js")"></script>
+
+
     <script>
         axios.defaults.timeout = 1000
         function UpdateGatewayState() {
@@ -67,12 +73,15 @@
         const gatewayCards = {}
         function UpdateComponents(datas) {
             const container = document.getElementById("gateway-card-container");
-            console.log(datas);
+
             datas.forEach(data => {
                 const gatewayId = data['gateWayId'];
                 let gatewayCard = gatewayCards[gatewayId];
                 if (!gatewayCard) {
                     gatewayCard = gatewayCards[gatewayId] = document.createElement("gateway-card");
+                    gatewayCard.addEventListener("click", function (e) {
+                        showPopupWindow(gatewayCard);
+                    });
                     container.appendChild(gatewayCard);
                 }
 
@@ -90,6 +99,13 @@
                     state = "正常"
                 }
 
+                if (state == "警報中" && gatewayCard.lastState != "警報中") {
+                    document.getElementById("alarm-audio").play();
+                    gatewayCard.lastState = "警報中"
+                } else {
+                    gatewayCard.lastState = state
+                }
+
                 var updateTime = new Date(data['updateTime']);
                 var nowTime = new Date();
                 const timeInterval = nowTime.getTime() - updateTime.getTime();
@@ -101,7 +117,10 @@
                     { key: "經度", value: data['longitude'] },
                     { key: "更新時間", value: `${parseInt(timeInterval / 1000 )}秒前` },
                 ];
+                gatewayCard.lat = data['latitude'];
+                gatewayCard.lng = data['longitude'];
                 gatewayCard.setInformation(info);
+                gatewayCard.information = info;
             });
         }
     </script>
@@ -110,7 +129,7 @@
 <div id="gateway-card-container" class="gateway-card-container">
 </div>
 
-<div id="loader" class='loader' style="display:none" >
+<div id="loader" class='loader' style="display:none">
     <div class="bg"></div>
     <div class='circle'></div>
     <div class='circle'></div>
