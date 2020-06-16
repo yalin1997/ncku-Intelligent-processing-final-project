@@ -6,6 +6,8 @@ import sys
 
 BtnFire = 12
 StateLED = 11
+BtnStop = 10
+AlarmLED = 8
 GatewayURL = "http://172.24.54.1:5002/api/"
 
 def triggerFire(self):
@@ -16,6 +18,19 @@ def triggerFire(self):
     }
     headers={'Content-type':'application/json', 'Accept':'application/json'}
     res = requests.post(GatewayURL+'fireAlarm/getFireAlarm' ,headers=headers , json = data , timeout = 1)
+    if(res.status_code == 200):
+        print(res.json())
+    else:
+        print(res)
+
+def triggerStop(self):
+    print("Trigger fire.")
+    data = {
+        "account" : "account",
+        "password" : "account"
+    }
+    headers={'Content-type':'application/json', 'Accept':'application/json'}
+    res = requests.post(GatewayURL+'fireAlarm/fireAlarmStop' ,headers=headers , json = data , timeout = 1)
     if(res.status_code == 200):
         print(res.json())
     else:
@@ -59,8 +74,10 @@ class ControlLEDTrhead (threading.Thread):
 try:
     GPIO.setmode(GPIO.BOARD)
     GPIO.setup(BtnFire , GPIO.IN , pull_up_down = GPIO.PUD_DOWN)
+    GPIO.setup(BtnStop , GPIO.IN , pull_up_down = GPIO.PUD_DOWN)
     GPIO.setup(StateLED , GPIO.OUT)
     GPIO.add_event_detect(BtnFire , GPIO.RISING , callback = triggerFire, bouncetime = 200)
+    GPIO.add_event_detect(BtnStop , GPIO.RISING , callback = triggerStop, bouncetime = 200)
 
     LEDControlState = ControlLEDTrhead(StateLED)
     LEDControlState.start()
