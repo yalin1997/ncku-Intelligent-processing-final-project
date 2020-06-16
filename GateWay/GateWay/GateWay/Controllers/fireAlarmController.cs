@@ -85,7 +85,7 @@ namespace GateWay.Controllers
             // 將轉為 string 的 json 依編碼並指定 content type 存為 httpcontent
             HttpContent contentPost = new StringContent(json, Encoding.UTF8, "application/json");
             // 發出 post 並取得結果
-            HttpResponseMessage response = cloudHttpSender.PostAsync(Configuration["CloudUri"] + "/api/fireAlarm/gateWayRegister", contentPost).GetAwaiter().GetResult();
+            HttpResponseMessage response = cloudHttpSender.PostAsync(Configuration["CloudUri"] + "/api/CloudService/getFireAlarmGateWay", contentPost).GetAwaiter().GetResult();
             string cloudResponse = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
             cloudResponseModel responseModel = JsonConvert.DeserializeObject<cloudResponseModel>(cloudResponse);
             if (responseModel.content == "true")
