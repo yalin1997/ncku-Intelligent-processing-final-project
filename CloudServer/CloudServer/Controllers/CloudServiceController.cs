@@ -28,6 +28,7 @@ namespace CloudServer.Controllers
             string gateWayId = gatewayMessage.gateWayId;
             GateWayModel alarmGateWay;
             _gatewayControl.findGateWay(gateWayId, out alarmGateWay);
+            alarmGateWay.isAlarm = true;
             return new OkObjectResult(new GateWayMessageModel { gateWayId = gateWayId, content = "true" });
         }
         // 手機找到最近gw

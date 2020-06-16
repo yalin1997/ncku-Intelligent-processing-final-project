@@ -7,7 +7,7 @@ namespace GateWay.UtilComponent
 {
     class fireAlarmControl : IAlarmControl
     {
-        private bool alarmTime = false;
+        public bool alarmTime = false;
         private fireAlarmModel Alarm;
         public bool isAlarm()
         {
