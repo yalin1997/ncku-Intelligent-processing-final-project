@@ -34,7 +34,7 @@ namespace GateWay.UtilComponent
             _logger.LogInformation("問雲端服務啟動");
 
             _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
-            return SendAskToCloudAsync();
+            return Task.CompletedTask;
         }
 
         private void DoWork(object state)
