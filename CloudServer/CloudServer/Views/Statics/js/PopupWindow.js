@@ -58,6 +58,36 @@ function showPopupWindow(gatewayCard) {
     table.style.marginLeft = "20px";
     tbody.style.width = "100%";
 
+    const buttonBar = document.createElement('div');
+    buttonBar.style.display = "inline-block";
+    buttonBar.style.float = "right";
+    buttonBar.style.padding = "30px";
+    buttonBar.style.verticalAlign = "center";
+
+    const stopBtn = document.createElement('button');
+    stopBtn.innerText = "停止警報";
+    stopBtn.style.padding = "7px";
+    stopBtn.style.display = "none";
+
+    stopBtn.addEventListener("click", () => {
+        stopBtn.disabled = true;
+        axios.post("/api/CloudService/getFireAlarmGateWay", {
+            gateWayId: gatewayCard.gatewayId,
+            messageType: 7
+        })
+            .then(function (response) {
+                document.getElementById("loader").style.display = "none";
+                UpdateComponents(response.data);
+                stopBtn.disabled = false;
+            })
+            .catch(function (error) {
+                document.getElementById("loader").style.display = "";
+                stopBtn.disabled = false;
+            });
+    });
+
+    buttonBar.appendChild(stopBtn);
+
     const map = document.createElement('div');
     map.style.width = "100%";
     map.style.height = `calc(100% - 190px)`;
@@ -77,11 +107,17 @@ function showPopupWindow(gatewayCard) {
         });
 
         svgIcon.setAttribute("fill", gatewayCard.iconColor);
+
+        if (gatewayCard.iconColor == "red")
+            stopBtn.style.display = "block";
+        else
+            stopBtn.style.display = "none";
     });
 
     container.appendChild(topbar);
     container.appendChild(icon);
     container.appendChild(table);
+    container.appendChild(buttonBar);
     container.appendChild(map);
     document.body.appendChild(container);
 
