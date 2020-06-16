@@ -51,7 +51,12 @@ namespace CloudServer.Controllers
         public IActionResult userControlFire(string onFireGateWayId)
         {
             GateWayModel alarmGateWay;
-            _gatewayControl.findGateWay(onFireGateWayId, out alarmGateWay);
+            bool result;
+            result = _gatewayControl.findGateWay(onFireGateWayId, out alarmGateWay);
+            if (result)
+            {
+                alarmGateWay.isAlarm = true;
+            }
             return new OkObjectResult(new ReturnGateWayModel { gateWayId = onFireGateWayId, messageType = (int)messageCode.gateWayCode.gateWayReponse, gateWayUri = alarmGateWay.gateWayUri, isAlarm = alarmGateWay.isAlarm });
         }
         // 取得gw List
