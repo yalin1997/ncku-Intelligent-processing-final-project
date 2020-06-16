@@ -62,7 +62,7 @@ namespace GateWay.UtilComponent
                 var response = await cloudHttpSender.PostAsync(_configuration["CloudUri"] + "/api/CloudService/gateWayRegister", contentPost);
                 string cloudResponse = await response.Content.ReadAsStringAsync();
                 var responseModel = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.cloudResponseModel>(cloudResponse);
-                if (responseModel != null && responseModel.content == "true")
+                if (responseModel != null && responseModel.content.ToString() == "True")
                 {
                     _logger.LogDebug("燒起來了");
                     _alarmControl.setAlarm();
