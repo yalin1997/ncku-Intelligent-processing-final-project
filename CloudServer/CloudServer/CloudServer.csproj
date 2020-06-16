@@ -5,15 +5,20 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <None Remove="Views\Statics\css\loader.css" />
+    <None Remove="Views\Statics\js\GatewayCard.js" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Views\Statics\css\loader.css">
+    <Content Include="Views\Statics\css\loader.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Views\Statics\js\GatewayCard.js">
+    </Content>
+    <Content Include="Views\Statics\js\GatewayCard.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 </Project>
