@@ -26,18 +26,24 @@ namespace GateWay.Controllers
             _authControl = authControl;
             Configuration = configuration;
         }
+        // sensor to gw
         [HttpPost]
         public IActionResult getFireAlarm([FromBody]accountPasswordModel deviceMessage)//(fireAlarmModel fireAlarm)
         {
             if (_authControl.authDeviceInfo(deviceMessage))
             {
-                if (SendAlarmToCloud((int)messageCode.gateWayCode.fireAlarm, DateTime.Now))
+                _alarmControl.setAlarm();
+                bool result;
+                do
                 {
-                    return new OkObjectResult(new gateWayMessageModel { gateWayId = Configuration["GateWayId"], messageType = (int)messageCode.gateWayCode.alarmResponse , content = "true" });
-                }
+                    result = SendAlarmToCloud((int)messageCode.gateWayCode.fireAlarm, DateTime.Now);
+                } while (!result);
+                return new OkObjectResult(new gateWayMessageModel { gateWayId = Configuration["GateWayId"], messageType = (int)messageCode.gateWayCode.alarmResponse , content = "true" });
+
             }
             return new ObjectResult("auth error");
         }
+        // 收不到
         [HttpPost]
         public IActionResult getFireAlarmFromCloud([FromBody] gateWayMessageModel cloudMessage)//(fireAlarmModel fireAlarm)
         {
@@ -45,6 +51,7 @@ namespace GateWay.Controllers
              return new OkObjectResult(new gateWayMessageModel { gateWayId = Configuration["GateWayId"], messageType = (int)messageCode.gateWayCode.alarmResponse, content = "true" });
         }
         [HttpPost]
+        // 收不到
         public IActionResult cloudFireAlarm([FromBody] accountPasswordModel cloudMessage)
         {
             if (_authControl.authDeviceInfo(cloudMessage))
@@ -54,6 +61,7 @@ namespace GateWay.Controllers
             }
             return new OkObjectResult(new gateWayMessageModel { gateWayId = Configuration["GateWayId"], messageType = (int)messageCode.gateWayCode.alarmResponse, content = "false" });
         }
+        // 給sensor問
         [HttpPost]
         public IActionResult SensorAlarm([FromBody] accountPasswordModel deviceMessage)
         {
@@ -67,10 +75,6 @@ namespace GateWay.Controllers
             }
             return new ObjectResult("auth error");
         }
-        public IActionResult sendAlive()
-        {
-            return new OkObjectResult(new gateWayMessageModel { gateWayId = Configuration["GateWayId"], messageType = (int)messageCode.gateWayCode.alive, content = "true" });
-        }
 
         private bool SendAlarmToCloud( int type , DateTime time)
         {
@@ -82,24 +86,6 @@ namespace GateWay.Controllers
             HttpContent contentPost = new StringContent(json, Encoding.UTF8, "application/json");
             // 發出 post 並取得結果
             HttpResponseMessage response = cloudHttpSender.PostAsync(Configuration["CloudUri"] + "/api/fireAlarm/gateWayRegister", contentPost).GetAwaiter().GetResult();
-            string cloudResponse = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-            cloudResponseModel responseModel = JsonConvert.DeserializeObject<cloudResponseModel>(cloudResponse);
-            if (responseModel.content == "true")
-            {
-                return true;
-            }
-            return false;
-        }
-        private bool SendRegisterToCloud()
-        {
-            var cloudHttpSender = _clientFactory.CreateClient();
-            GateWayModel postData = new GateWayModel() { gateWayId = Configuration["GateWayId"], longitude = Convert.ToDouble(Configuration["longitude"]), latitude = Convert.ToDouble(Configuration["latitude"]) };
-            // 將 data 轉為 json
-            string json = JsonConvert.SerializeObject(postData);
-            // 將轉為 string 的 json 依編碼並指定 content type 存為 httpcontent
-            HttpContent contentPost = new StringContent(json, Encoding.UTF8, "application/json");
-            // 發出 post 並取得結果
-            HttpResponseMessage response = cloudHttpSender.PostAsync(Configuration["CloudUri"]+ "/api/fireAlarm/gateWayRegister", contentPost).GetAwaiter().GetResult();
             string cloudResponse = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
             cloudResponseModel responseModel = JsonConvert.DeserializeObject<cloudResponseModel>(cloudResponse);
             if (responseModel.content == "true")
