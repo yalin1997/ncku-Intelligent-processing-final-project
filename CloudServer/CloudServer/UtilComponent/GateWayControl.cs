@@ -89,7 +89,6 @@ namespace CloudServer.UtilComponent
         }
         public bool gateWayRegister(GateWayModel gateWayInfo)
         {
-            GateWayModel gw;
             if(GatewayDictionary.ContainsKey(gateWayInfo.gateWayId))
             {
                 GatewayDictionary[gateWayInfo.gateWayId].UpdateTime = DateTime.Now;
