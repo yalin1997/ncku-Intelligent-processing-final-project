@@ -63,9 +63,11 @@
         }
         .layout-footer {
             background-color: #0f0d16;
-            height: var(--layout-footer-height);
+            height: calc( var(--layout-footer-height) - var(--nav-bar-padding) * 2);
+            padding: var(--nav-bar-padding);
             text-align: center;
             vertical-align: middle;
+            color: beige;
         }
         .nav-right-toolbox {
             float: right;
@@ -99,6 +101,8 @@
         <audio id="alarm-audio">
             <source src="@Url.Content("~/statics/sound/alarm-web.mp3")" type="audio/mp3" />
         </audio>
+        2020@@普皓群&陳泓允
+        <span style="float:right">Version:20200617</span>
     </div>
 </body>
 </html>

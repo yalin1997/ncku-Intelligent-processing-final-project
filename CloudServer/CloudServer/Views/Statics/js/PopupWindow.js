@@ -84,8 +84,8 @@ function showPopupWindow(gatewayCard) {
     container.appendChild(table);
     container.appendChild(map);
     document.body.appendChild(container);
-    const gps = [22.997901, 120.223558]
-    //const gps = [gatewayCard.lng , gatewayCard.lat]
+
+    const gps = [gatewayCard.lng , gatewayCard.lat]
     const mapInstance = L.map(map).setView(gps, 16.5);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

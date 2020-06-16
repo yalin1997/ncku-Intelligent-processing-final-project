@@ -7,14 +7,22 @@
 
   <ItemGroup>
     <None Remove="Views\Statics\css\loader.css" />
+    <None Remove="Views\Statics\css\PopupWindow.css" />
     <None Remove="Views\Statics\js\GatewayCard.js" />
+    <None Remove="Views\Statics\js\PopupWindow.js" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="Views\Statics\css\loader.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Views\Statics\css\PopupWindow.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Views\Statics\js\GatewayCard.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\Statics\js\PopupWindow.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
