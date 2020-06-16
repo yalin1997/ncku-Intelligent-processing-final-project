@@ -13,7 +13,10 @@ namespace GateWay.typeCode
             fireAlarm = 1,
             alive = 2,
             alarmResponse = 3,
-            sensorAlarm = 4
+            sensorAlarm = 4,
+            gateWayReponse = 5,
+            registerResponse = 6,
+            stopAlarm = 7
         }
     }
 }

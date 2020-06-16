@@ -43,6 +43,21 @@ namespace GateWay.Controllers
             }
             return new ObjectResult("auth error");
         }
+        [HttpPost]
+        public IActionResult fireAlarmStop([FromBody] accountPasswordModel deviceMessage)//(fireAlarmModel fireAlarm)
+        {
+            if (_authControl.authDeviceInfo(deviceMessage))
+            {
+                _alarmControl.setSafe();
+                bool result;
+                do
+                {
+                    result = SendAlarmToCloud((int)messageCode.gateWayCode.stopAlarm, DateTime.Now);
+                } while (!result);
+                return new OkObjectResult(new gateWayMessageModel { gateWayId = Configuration["GateWayId"], messageType = (int)messageCode.gateWayCode.alarmResponse, content = "true" });
+            }
+            return new ObjectResult("auth error");
+        }
         // 收不到
         [HttpPost]
         public IActionResult getFireAlarmFromCloud([FromBody] gateWayMessageModel cloudMessage)//(fireAlarmModel fireAlarm)

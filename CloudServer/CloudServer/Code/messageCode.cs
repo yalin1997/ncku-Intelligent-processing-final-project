@@ -14,7 +14,8 @@ namespace CloudServer.Code
             alarmResponse = 3,
             sensorAlarm = 4,
             gateWayReponse = 5,
-            registerResponse = 6
+            registerResponse = 6,
+            stopAlarm = 7
         }
     }
 }
