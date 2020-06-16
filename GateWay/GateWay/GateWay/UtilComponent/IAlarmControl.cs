@@ -11,7 +11,7 @@ namespace GateWay.UtilComponent
         public void setAlarm();
         public void setSafe();
         public string getId();
-        public double getLon();
-        public double getLat();
+        public float getLon();
+        public float getLat();
     }
 }

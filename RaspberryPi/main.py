@@ -71,16 +71,51 @@ class ControlLEDTrhead (threading.Thread):
     def stop(self):
         self._isStop = True
 
+class UpdateInformation (threading.Thread):
+    def __init__(self , ledControl):
+        threading.Thread.__init__(self)
+        self._isStop = False
+        self._ledControl = ledControl
+
+    def run(self):
+        last = False
+        while(not self._isStop):
+            data = {
+                "account" : "account",
+                "password" : "account"
+            }
+            headers={'Content-type':'application/json', 'Accept':'application/json'}
+            res = requests.post(GatewayURL+'fireAlarm/SensorAlarm' ,headers=headers , json = data , timeout = 1)
+            if(res.status_code == 200):
+                print(res.json())
+                if(res.json()["content"] == 'true' and last == False):
+                    self._ledControl.setState(True , 1)
+                    last = True
+                else:
+                    self._ledControl.setState(False , 1)
+                    last = False
+            else:
+                print(res)
+            time.sleep(1)
+
+    def stop(self):
+        self._isStop = True
+
 try:
     GPIO.setmode(GPIO.BOARD)
     GPIO.setup(BtnFire , GPIO.IN , pull_up_down = GPIO.PUD_DOWN)
     GPIO.setup(BtnStop , GPIO.IN , pull_up_down = GPIO.PUD_DOWN)
     GPIO.setup(StateLED , GPIO.OUT)
+    GPIO.setup(AlarmLED , GPIO.OUT)
     GPIO.add_event_detect(BtnFire , GPIO.RISING , callback = triggerFire, bouncetime = 200)
     GPIO.add_event_detect(BtnStop , GPIO.RISING , callback = triggerStop, bouncetime = 200)
 
     LEDControlState = ControlLEDTrhead(StateLED)
+    LEDControlAlarm = ControlLEDTrhead(AlarmLED)
+    UpdateInformation = UpdateInformation(LEDControlAlarm)
     LEDControlState.start()
+    UpdateInformation.start()
+    LEDControlAlarm.start()
 
     LEDControlState.setState(True , 2)
 
@@ -96,6 +131,14 @@ except:
     if(LEDControlState.isAlive()):
         LEDControlState.stop()
         LEDControlState.join()
+
+    if(LEDControlAlarm.isAlive()):
+        LEDControlAlarm.stop()
+        LEDControlAlarm.join()
+
+    if(UpdateInformation.isAlive()):
+        UpdateInformation.stop()
+        UpdateInformation.join()
 
 finally:
     GPIO.cleanup()

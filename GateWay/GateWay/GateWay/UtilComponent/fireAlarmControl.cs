@@ -9,14 +9,14 @@ namespace GateWay.UtilComponent
     {
         public bool alarmTime = false;
         public string gateWayId { get; set; }
-        public double longitude { get; set; }
-        public double latitude { get; set; }
+        public float longitude { get; set; }
+        public float latitude { get; set; }
         public fireAlarmControl()
         {
             Random random = new Random(Guid.NewGuid().GetHashCode());
             gateWayId = "gw" + random.Next(1000).ToString();
-            longitude = 22.995928 + random.Next(-1, 1);
-            latitude = 120.217433 + random.Next(-1, 1);
+            longitude = 120.223567f + random.Next(-1000, 1000) * 0.00001f;
+            latitude = 22.997855f + random.Next(-1000, 1000) * 0.00001f;
         }
         public bool isAlarm()
         {
@@ -36,12 +36,12 @@ namespace GateWay.UtilComponent
             return gateWayId;
         }
 
-        public double getLon()
+        public float getLon()
         {
             return longitude;
         }
 
-        public double getLat()
+        public float getLat()
         {
             return latitude;
         }
