@@ -25,7 +25,6 @@ namespace GateWay.Controllers
             _alarmControl = fireAlarmControl;
             _authControl = authControl;
             Configuration = configuration;
-            SendRegisterToCloud();
         }
         [HttpPost]
         public IActionResult getFireAlarm([FromBody]accountPasswordModel deviceMessage)//(fireAlarmModel fireAlarm)
