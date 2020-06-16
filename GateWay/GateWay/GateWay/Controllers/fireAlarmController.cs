@@ -43,6 +43,7 @@ namespace GateWay.Controllers
             }
             return new ObjectResult("auth error");
         }
+        //停止火災警報
         [HttpPost]
         public IActionResult fireAlarmStop([FromBody] accountPasswordModel deviceMessage)//(fireAlarmModel fireAlarm)
         {
