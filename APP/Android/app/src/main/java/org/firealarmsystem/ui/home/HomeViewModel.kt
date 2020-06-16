@@ -12,4 +12,5 @@ class HomeViewModel : ViewModel() {
 
     val title: LiveData<String> = _title
     val gateways: MutableLiveData<Collection<String>> = MutableLiveData()
+    val isAlarm: MutableLiveData<Boolean> = MutableLiveData()
 }

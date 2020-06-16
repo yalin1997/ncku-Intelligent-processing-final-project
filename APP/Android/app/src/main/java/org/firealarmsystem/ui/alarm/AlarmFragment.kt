@@ -2,12 +2,17 @@ package org.firealarmsystem.ui.alarm
 
 import android.media.RingtoneManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import org.firealarmsystem.R
+import org.firealarmsystem.ui.home.HomeViewModel
 
 
 class AlarmFragment : Fragment() {
@@ -43,8 +48,16 @@ class AlarmFragment : Fragment() {
         r.play()
 
         val dialog = builder.create()
-        dialog.show()
 
+        val homeViewModel = activity?.run {
+            ViewModelProviders.of(this).get(HomeViewModel::class.java)
+        } ?: throw Exception("Invalid Activity")
+
+        homeViewModel.isAlarm.observe(this , Observer { flag ->
+            if(flag){
+                dialog.show()
+            }
+        })
     }
 
 

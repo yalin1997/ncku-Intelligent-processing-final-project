@@ -57,10 +57,6 @@ class AlarmButton : View {
         mPaintText.textAlign = Paint.Align.CENTER
         mPaintText.color = colorNormal
 
-        setOnClickListener {
-            Log.e("OnClick", "OnClick")
-        }
-
         setOnTouchListener { view, event ->
             when(event.action){
                 ACTION_DOWN -> {

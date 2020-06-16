@@ -8,8 +8,6 @@
   <ItemGroup>
     <None Remove="Views\Statics\css\loader.css" />
     <None Remove="Views\Statics\css\PopupWindow.css" />
-    <None Remove="Views\Statics\js\GatewayCard.js" />
-    <None Remove="Views\Statics\js\PopupWindow.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -17,12 +15,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Views\Statics\css\PopupWindow.css">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Views\Statics\js\GatewayCard.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Views\Statics\js\PopupWindow.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -33,6 +25,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Views\Statics\js\GatewayCard.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Views\Statics\js\PopupWindow.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Views\Statics\sound\alarm-web.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

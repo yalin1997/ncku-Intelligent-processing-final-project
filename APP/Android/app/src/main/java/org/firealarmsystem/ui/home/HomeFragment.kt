@@ -2,31 +2,49 @@ package org.firealarmsystem.ui.home
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListView
+import android.widget.Toast
+import android.widget.Toast.LENGTH_LONG
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.android.volley.Request
+import com.android.volley.RequestQueue
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import kotlinx.android.synthetic.main.fragment_home.*
 import org.firealarmsystem.R
+import org.json.JSONObject
+import java.util.*
+import kotlin.concurrent.schedule
 
 
 class HomeFragment : Fragment() {
 
     private lateinit var homeViewModel: HomeViewModel
+    private lateinit var requestQueue : RequestQueue
+    private val updateTimer = Timer()
+    private lateinit var updateTimerTask : TimerTask
+    private var selectedItemIndex : Int = -1
 
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        homeViewModel =
-                ViewModelProviders.of(this).get(HomeViewModel::class.java)
+        homeViewModel = activity?.run {
+            ViewModelProviders.of(this).get(HomeViewModel::class.java)
+        } ?: throw Exception("Invalid Activity")
+
         val root = inflater.inflate(R.layout.fragment_home, container, false)
 
         homeViewModel.title.observe(viewLifecycleOwner, Observer {
@@ -51,13 +69,66 @@ class HomeFragment : Fragment() {
                 child.setBackgroundColor(Color.WHITE)
 
                 if(child == view){
+                    selectedItemIndex = index
                     child.setBackgroundColor(Color.parseColor("#ffa4a2"))
                 }
             }
         }
 
-        homeViewModel.gateways.postValue(arrayListOf("Gateway1" , "Gateway2" , "Gateway3"))
+        homeViewModel.isAlarm.value = false
+        /** Volley http request queue **/
+        requestQueue = Volley.newRequestQueue(this.context)
+
+        val obj = JSONObject()
+        obj.put("longitudee", 22.9f)
+        obj.put("latitude", 120.2f)
+        updateTimerTask  = updateTimer.schedule( 0 , 2000 ){
+            val jsonRequest = JsonObjectRequest(Request.Method.POST, "https://1082-im.biyasu.com/api/CloudService/findGayWay", obj ,
+                Response.Listener { response ->
+
+                    homeViewModel.gateways.postValue(arrayListOf(response.getString("gateWayId")))
+                    Log.i("response" , response.toString())
+                    if(response.getBoolean("isAlarm")){
+                        if(!homeViewModel.isAlarm.value!!) {
+                            homeViewModel.isAlarm.postValue(true)
+                        }
+                    }else {
+                        homeViewModel.isAlarm.postValue(false)
+                    }
+                },
+                Response.ErrorListener { error ->
+                    Log.e("response" , error.toString())
+                }
+            )
+            requestQueue.add(jsonRequest)
+        }
+
+        val btnAlarm = root.findViewById<AlarmButton>(R.id.btn_alarm)
+        btnAlarm.setOnClickListener{
+            if(homeViewModel.gateways.value != null && selectedItemIndex >= 0 && selectedItemIndex < homeViewModel.gateways.value!!.size){
+                val jsonRequest = JsonObjectRequest(Request.Method.POST, "https://1082-im.biyasu.com/api/CloudService/userControlFire?onFireGateWayId=" + homeViewModel.gateways.value!!.elementAt(selectedItemIndex), null ,
+                    Response.Listener { response ->
+                        if(response.getBoolean("isAlarm")){
+                            Toast.makeText(this.context , "成功" , LENGTH_LONG).show()
+                        }else{
+                            Toast.makeText(this.context , "失敗" , LENGTH_LONG).show()
+                        }
+                    },
+                    Response.ErrorListener {
+                        Toast.makeText(this.context , "網路錯誤" , LENGTH_LONG).show()
+                    }
+                )
+                requestQueue.add(jsonRequest)
+            }
+        }
 
         return root
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        updateTimer.cancel()
+        updateTimer.purge()
     }
 }
