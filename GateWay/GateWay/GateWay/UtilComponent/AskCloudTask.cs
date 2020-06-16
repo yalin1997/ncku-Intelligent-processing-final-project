@@ -51,7 +51,10 @@ namespace GateWay.UtilComponent
         private async Task<bool> SendAskToCloudAsync()
         {
             var cloudHttpSender = _clientFactory.CreateClient();
-            var postData = new CloudServer.Models.GateWayModel() { gateWayId = _configuration["GateWayId"], longitude = Convert.ToDouble(_configuration["longitude"]), latitude = Convert.ToDouble(_configuration["latitude"]) };
+            Console.WriteLine("id : " + _alarmControl.getId());
+            Console.WriteLine("longitude : " + _alarmControl.getLon());
+            Console.WriteLine("latitude : " + _alarmControl.getLat());
+            var postData = new CloudServer.Models.GateWayModel() { gateWayId = _alarmControl.getId(), longitude = _alarmControl.getLon(), latitude = _alarmControl.getLat() };
             // 將 data 轉為 json
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(postData);
             // 將轉為 string 的 json 依編碼並指定 content type 存為 httpcontent

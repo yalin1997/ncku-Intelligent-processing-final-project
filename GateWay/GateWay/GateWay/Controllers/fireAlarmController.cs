@@ -38,7 +38,7 @@ namespace GateWay.Controllers
                 {
                     result = SendAlarmToCloud((int)messageCode.gateWayCode.fireAlarm, DateTime.Now);
                 } while (!result);
-                return new OkObjectResult(new gateWayMessageModel { gateWayId = Configuration["GateWayId"], messageType = (int)messageCode.gateWayCode.alarmResponse , content = "true" });
+                return new OkObjectResult(new gateWayMessageModel { gateWayId = _alarmControl.getId(), messageType = (int)messageCode.gateWayCode.alarmResponse , content = "true" });
 
             }
             return new ObjectResult("auth error");
@@ -55,7 +55,7 @@ namespace GateWay.Controllers
                 {
                     result = SendAlarmToCloud((int)messageCode.gateWayCode.stopAlarm, DateTime.Now);
                 } while (!result);
-                return new OkObjectResult(new gateWayMessageModel { gateWayId = Configuration["GateWayId"], messageType = (int)messageCode.gateWayCode.alarmResponse, content = "true" });
+                return new OkObjectResult(new gateWayMessageModel { gateWayId = _alarmControl.getId(), messageType = (int)messageCode.gateWayCode.alarmResponse, content = "true" });
             }
             return new ObjectResult("auth error");
         }
@@ -64,7 +64,7 @@ namespace GateWay.Controllers
         public IActionResult getFireAlarmFromCloud([FromBody] gateWayMessageModel cloudMessage)//(fireAlarmModel fireAlarm)
         {
             _alarmControl.setAlarm();
-             return new OkObjectResult(new gateWayMessageModel { gateWayId = Configuration["GateWayId"], messageType = (int)messageCode.gateWayCode.alarmResponse, content = "true" });
+             return new OkObjectResult(new gateWayMessageModel { gateWayId = _alarmControl.getId(), messageType = (int)messageCode.gateWayCode.alarmResponse, content = "true" });
         }
         [HttpPost]
         // 收不到
@@ -73,9 +73,9 @@ namespace GateWay.Controllers
             if (_authControl.authDeviceInfo(cloudMessage))
             {
                 _alarmControl.setAlarm();
-                return new OkObjectResult(new gateWayMessageModel { gateWayId = Configuration["GateWayId"], messageType = (int)messageCode.gateWayCode.alarmResponse, content = "true" });
+                return new OkObjectResult(new gateWayMessageModel { gateWayId = _alarmControl.getId(), messageType = (int)messageCode.gateWayCode.alarmResponse, content = "true" });
             }
-            return new OkObjectResult(new gateWayMessageModel { gateWayId = Configuration["GateWayId"], messageType = (int)messageCode.gateWayCode.alarmResponse, content = "false" });
+            return new OkObjectResult(new gateWayMessageModel { gateWayId = _alarmControl.getId(), messageType = (int)messageCode.gateWayCode.alarmResponse, content = "false" });
         }
         // 給sensor問
         [HttpPost]
@@ -85,9 +85,9 @@ namespace GateWay.Controllers
             {
                 if (_alarmControl.isAlarm())
                 {
-                    return new OkObjectResult(new gateWayMessageModel { gateWayId = Configuration["GateWayId"], messageType = (int)messageCode.gateWayCode.sensorAlarm, content = "true" });
+                    return new OkObjectResult(new gateWayMessageModel { gateWayId = _alarmControl.getId(), messageType = (int)messageCode.gateWayCode.sensorAlarm, content = "true" });
                 }
-                return new OkObjectResult(new gateWayMessageModel { gateWayId = Configuration["GateWayId"], messageType = (int)messageCode.gateWayCode.sensorAlarm, content = "false" });
+                return new OkObjectResult(new gateWayMessageModel { gateWayId = _alarmControl.getId(), messageType = (int)messageCode.gateWayCode.sensorAlarm, content = "false" });
             }
             return new ObjectResult("auth error");
         }
@@ -95,7 +95,7 @@ namespace GateWay.Controllers
         private bool SendAlarmToCloud( int type , DateTime time)
         {
             var cloudHttpSender = _clientFactory.CreateClient();
-            gateWayMessageModel postData = new gateWayMessageModel() { gateWayId = Configuration["GateWayId"], messageType = type, messageTime = time };
+            gateWayMessageModel postData = new gateWayMessageModel() { gateWayId = _alarmControl.getId(), messageType = type, messageTime = time };
             // 將 data 轉為 json
             string json = JsonConvert.SerializeObject(postData);
             // 將轉為 string 的 json 依編碼並指定 content type 存為 httpcontent
