@@ -93,8 +93,17 @@ namespace CloudServer.UtilComponent
         }
         public bool gateWayRegister(GateWayModel gateWayInfo)
         {
-            GatewayDictionary[gateWayInfo.gateWayId] = gateWayInfo;
-            return true;
+            GateWayModel gw;
+            bool result =  findGateWay(gateWayInfo.gateWayId, out gw);
+            if(result)
+            {
+                return gw.isAlarm;
+            }
+            else
+            {
+                GatewayDictionary[gateWayInfo.gateWayId] = gateWayInfo;
+                return false ;
+            }
         }
         private bool SendToOtherGateWay(string url, string gateWayId, DateTime time  )
         {

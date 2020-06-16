@@ -27,7 +27,7 @@ namespace GateWay
                     webBuilder.UseStartup<Startup>();
                 }).ConfigureServices(services =>
                 {
-                    services.AddHostedService<UtilComponent.RegisterTask>();
+                    services.AddHostedService<UtilComponent.AskCloud>();
                 });
     }
 }
