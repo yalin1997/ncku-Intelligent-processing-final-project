@@ -71,6 +71,12 @@ namespace GateWay.UtilComponent
                     _alarmControl.setAlarm();
                     return true;
                 }
+                else
+                {
+                    // 改回安全
+                    _alarmControl.setSafe();
+                    return false;
+                }
             }
             catch (Exception e)
             {

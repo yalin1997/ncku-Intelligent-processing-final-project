@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Threading.Tasks;
 using CloudServer.Code;
 using CloudServer.Models;
 using CloudServer.UtilComponent;
@@ -34,7 +31,6 @@ namespace CloudServer.Controllers
             }
             else
                 alarmGateWay.isAlarm = true;
-
             return new OkObjectResult(new GateWayMessageModel { gateWayId = gateWayId, content = "true" });
         }
         // 手機找到最近gw
