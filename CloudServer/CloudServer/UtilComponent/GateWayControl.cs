@@ -28,8 +28,12 @@ namespace CloudServer.UtilComponent
         {
             double closest =9999.9;
             GateWayModel closestGateWay = GateWayList[0];
-            foreach(GateWayModel item in GateWayList)
+            foreach (GateWayModel item in GateWayList)
             {
+                if (!item.isActive)
+                {
+                    continue;
+                }
                 double value = calculateDistance(item.longitude, item.latitude, mobile.longitude, mobile.latitude);
                 if (value < closest)
                 {
