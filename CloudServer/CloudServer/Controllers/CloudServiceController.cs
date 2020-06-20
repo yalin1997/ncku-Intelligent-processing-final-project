@@ -12,9 +12,9 @@ namespace CloudServer.Controllers
     [ApiController]
     public class CloudServiceController : ControllerBase
     {
-        private readonly IGateWayControl _gatewayControl;
+        private readonly IGatewayControl _gatewayControl;
 
-        public CloudServiceController(IGateWayControl gatewayControl , IHttpClientFactory clientFactory)
+        public CloudServiceController(IGatewayControl gatewayControl , IHttpClientFactory clientFactory)
         {
             _gatewayControl = gatewayControl;
         }
