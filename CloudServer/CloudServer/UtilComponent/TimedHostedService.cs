@@ -14,10 +14,10 @@ namespace CloudServer.UtilComponent
         private Timer _timer;
         private readonly IHttpClientFactory _clientFactory;
         private readonly IGatewayControl _gatewayControl;
-        public TimedHostedService(IHttpClientFactory httpClient , IGatewayControl gateWayControl)
+        public TimedHostedService(IHttpClientFactory httpClient , IGatewayControl gatewayControl)
         {
             _clientFactory = httpClient;
-            _gatewayControl = gateWayControl;
+            _gatewayControl = gatewayControl;
         }
         public Task StartAsync(CancellationToken cancellationToken)
         {
@@ -28,11 +28,11 @@ namespace CloudServer.UtilComponent
         }
         private void DoWork(object state)
         {
-            foreach(GatewayModel item in _gatewayControl.getGateWayList())
+            foreach(GatewayModel item in _gatewayControl.getGatewayList())
             {
-                if (!CheckHealthyGateWay(item.gateWayUri+"/hc"))
+                if (!CheckHealthyGateway(item.gatewayUri+"/hc"))
                 {
-                    _gatewayControl.removeGateWay(item);
+                    _gatewayControl.removeGateway(item);
                 }
             }
         }
@@ -46,7 +46,7 @@ namespace CloudServer.UtilComponent
         {
             _timer?.Dispose();
         }
-        private bool CheckHealthyGateWay(string url)
+        private bool CheckHealthyGateway(string url)
         {
             var cloudHttpSender = _clientFactory.CreateClient();
             // 將轉為 string 的 json 依編碼並指定 content type 存為 httpcontent

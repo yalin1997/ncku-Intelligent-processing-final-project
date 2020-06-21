@@ -7,6 +7,6 @@ namespace GateWay.UtilComponent
 {
     public interface IAuthenticateControl
     {
-        public bool authDeviceInfo(accountPasswordModel deviceInfo);
+        public bool authDeviceInfo(AccountPasswordModel deviceInfo);
     }
 }

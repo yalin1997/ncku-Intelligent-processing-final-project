@@ -54,7 +54,7 @@ namespace GateWay.UtilComponent
             Console.WriteLine("id : " + _alarmControl.getId());
             Console.WriteLine("longitude : " + _alarmControl.getLon());
             Console.WriteLine("latitude : " + _alarmControl.getLat());
-            var postData = new CloudServer.Models.GateWayModel() { gateWayId = _alarmControl.getId(), longitude = _alarmControl.getLon(), latitude = _alarmControl.getLat() };
+            var postData = new CloudServer.Models.GatewayModel() { gatewayId = _alarmControl.getId(), longitude = _alarmControl.getLon(), latitude = _alarmControl.getLat() };
             // 將 data 轉為 json
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(postData);
             // 將轉為 string 的 json 依編碼並指定 content type 存為 httpcontent
@@ -64,7 +64,7 @@ namespace GateWay.UtilComponent
             {
                 var response = await cloudHttpSender.PostAsync(_configuration["CloudUri"] + "/api/CloudService/gateWayRegister", contentPost);
                 string cloudResponse = await response.Content.ReadAsStringAsync();
-                var responseModel = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.cloudResponseModel>(cloudResponse);
+                var responseModel = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.CloudResponseModel>(cloudResponse);
                 if (responseModel != null && responseModel.content.ToString() == "True")
                 {
                     _logger.LogDebug("燒起來了");

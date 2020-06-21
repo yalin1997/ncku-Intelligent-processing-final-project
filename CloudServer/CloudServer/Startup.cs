@@ -30,7 +30,7 @@ namespace CloudServer
             services.AddControllersWithViews().AddControllersAsServices();
             services.AddHealthChecks();
             services.AddHttpClient();
-            services.AddSingleton<IGatewayControl , GateWayControl>();
+            services.AddSingleton<IGatewayControl , GatewayControl>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

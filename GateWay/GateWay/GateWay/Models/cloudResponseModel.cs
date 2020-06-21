@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace GateWay.Models
 {
-    public class cloudResponseModel
+    public class CloudResponseModel
     {
         public int messageType { get; set; }
         public string content { get; set; }

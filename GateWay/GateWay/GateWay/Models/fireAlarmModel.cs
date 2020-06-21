@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace GateWay.Models
 {
-    public class fireAlarmModel
+    public class FireAlarmModel
     {
         public long sensorId { get; set; }
         public DateTime Date { get; set; }

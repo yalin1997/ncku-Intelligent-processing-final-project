@@ -7,12 +7,8 @@ namespace GateWay.UtilComponent
 {
     public class AuthenticateControl : IAuthenticateControl
     {
-        private List<accountPasswordModel> memberList = new List<accountPasswordModel>();
-        public AuthenticateControl()
-        {
-            
-        }
-        public bool authDeviceInfo(accountPasswordModel deviceInfo)
+        // Demo 沒用
+        public bool authDeviceInfo(AccountPasswordModel deviceInfo)
         {
             return true;
         }

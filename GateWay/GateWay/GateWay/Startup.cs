@@ -57,7 +57,7 @@ namespace GateWay
                .AddConnections();
             #endregion
             services.AddHttpClient();
-            services.AddSingleton<IAlarmControl, fireAlarmControl>();
+            services.AddSingleton<IAlarmControl, FireAlarmControl>();
             services.AddSingleton<IAuthenticateControl, AuthenticateControl>();
             services.AddHealthChecks();
         }

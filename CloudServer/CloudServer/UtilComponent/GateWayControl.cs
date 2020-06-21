@@ -10,25 +10,25 @@ using System.Threading.Tasks;
 
 namespace CloudServer.UtilComponent
 {
-    public class GateWayControl : IGateWayControl
+    public class GatewayControl : IGatewayControl
     {
-        private Dictionary<string, GateWayModel> GatewayDictionary = new Dictionary<string, GateWayModel>();
-        public IReadOnlyList<GateWayModel> GateWayList { get => GatewayDictionary.Values.ToList(); }
-        public GateWayControl() { }
+        private Dictionary<string, GatewayModel> GatewayDictionary = new Dictionary<string, GatewayModel>();
+        public IReadOnlyList<GatewayModel> GatewayList { get => GatewayDictionary.Values.ToList(); }
+        public GatewayControl() { }
         private double alarmThreshold = 10;
         private readonly IHttpClientFactory _clientFactory;
         
-        public GateWayControl(IHttpClientFactory clientFactory)
+        public GatewayControl(IHttpClientFactory clientFactory)
         {
             _clientFactory = clientFactory;
         }
         public static double calculateDistance(double x1, double y1, double x2, double y2)
             => Math.Sqrt(((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)));
-        public GateWayModel findClosestGateWay(MobileDevicesModel mobile)
+        public GatewayModel findClosestGateway(MobileDevicesModel mobile)
         {
             double closest =9999.9;
-            GateWayModel closestGateWay = GateWayList[0];
-            foreach (GateWayModel item in GateWayList)
+            GatewayModel closestGateway = GatewayList[0];
+            foreach (GatewayModel item in GatewayList)
             {
                 if (!item.isActive)
                 {
@@ -38,16 +38,16 @@ namespace CloudServer.UtilComponent
                 if (value < closest)
                 {
                     closest = value;
-                    closestGateWay = item;
+                    closestGateway = item;
                 }
             }
-            return closestGateWay;
+            return closestGateway;
         }
-        public GateWayModel findClosestGateWay(GateWayModel gateway)
+        public GatewayModel findClosestGateway(GatewayModel gateway)
         {
             double closest = 9999.9;
-            GateWayModel closestGateWay = GateWayList[0];
-            foreach (GateWayModel item in GateWayList)
+            GatewayModel closestGateway = GatewayList[0];
+            foreach (GatewayModel item in GatewayList)
             {
                 if (item.latitude == gateway.latitude && item.longitude == gateway.longitude)
                 {
@@ -57,24 +57,24 @@ namespace CloudServer.UtilComponent
                 if (value < closest)
                 {
                     closest = value;
-                    closestGateWay = item;
+                    closestGateway = item;
                 }
             }
-            return closestGateWay;
+            return closestGateway;
         }
-        public bool  findGateWay(string gateWayId , out GateWayModel gateway)
+        public bool  findGateway(string gatewayId , out GatewayModel gateway)
         {
-            if (GatewayDictionary.ContainsKey(gateWayId))
+            if (GatewayDictionary.ContainsKey(gatewayId))
             {
-                gateway = GatewayDictionary[gateWayId];
+                gateway = GatewayDictionary[gatewayId];
                 return true;
             }
-            gateway = new GateWayModel { gateWayId = "-1" };
+            gateway = new GatewayModel { gatewayId = "-1" };
             return false;
         }
-        public void setClosestGateWayAlarm(GateWayModel  gateway)
+        public void setClosestGatewayAlarm(GatewayModel  gateway)
         {
-            foreach (GateWayModel item in GateWayList)
+            foreach (GatewayModel item in GatewayList)
             {
                 if (calculateDistance(gateway.latitude , item.latitude , gateway.longitude , item.longitude) <= alarmThreshold)
                 {
@@ -82,32 +82,32 @@ namespace CloudServer.UtilComponent
                     bool result;
                     do
                     {
-                        result = SendToOtherGateWay(gateway.gateWayUri, gateway.gateWayId, DateTime.Now);
+                        result = SendToOtherGateway(gateway.gatewayUri, gateway.gatewayId, DateTime.Now);
                     } while (result == false);
                 }
             }
         }
-        public void setGateWayAlarm(string gateWayId, bool onFire)
+        public void setGatewayAlarm(string gateWayId, bool onFire)
         {
             throw new NotImplementedException();
         }
-        public bool gateWayRegister(GateWayModel gateWayInfo)
+        public bool gatewayRegister(GatewayModel gatewayInfo)
         {
-            if(GatewayDictionary.ContainsKey(gateWayInfo.gateWayId))
+            if(GatewayDictionary.ContainsKey(gatewayInfo.gatewayId))
             {
-                GatewayDictionary[gateWayInfo.gateWayId].UpdateTime = DateTime.Now;
-                return GatewayDictionary[gateWayInfo.gateWayId].isAlarm;
+                GatewayDictionary[gatewayInfo.gatewayId].UpdateTime = DateTime.Now;
+                return GatewayDictionary[gatewayInfo.gatewayId].isAlarm;
             }
             else
             {
-                GatewayDictionary[gateWayInfo.gateWayId] = gateWayInfo;
+                GatewayDictionary[gatewayInfo.gatewayId] = gatewayInfo;
                 return false;
             }
         }
-        private bool SendToOtherGateWay(string url, string gateWayId, DateTime time  )
+        private bool SendToOtherGateway(string url, string gatewayId, DateTime time  )
         {
             var cloudHttpSender = _clientFactory.CreateClient();
-            GateWayMessageModel postData = new GateWayMessageModel() { gateWayId = gateWayId ,  messageType = (int)messageCode.gateWayCode.fireAlarm , messageTime = time , content = "附近的網關 " + gateWayId + " 號檢測到火災!" };
+            GatewayMessageModel postData = new GatewayMessageModel() { gatewayId = gatewayId,  messageType = (int)messageCode.gateWayCode.fireAlarm , messageTime = time , content = $"附近的網關 { gatewayId } 號檢測到火災!" };
             // 將 data 轉為 json
             string json = JsonConvert.SerializeObject(postData);
             // 將轉為 string 的 json 依編碼並指定 content type 存為 httpcontent
@@ -115,7 +115,7 @@ namespace CloudServer.UtilComponent
             // 發出 post 並取得結果
             HttpResponseMessage response = cloudHttpSender.PostAsync(url, contentPost).GetAwaiter().GetResult();
             string cloudResponse = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-            GateWayMessageModel responseModel = JsonConvert.DeserializeObject<GateWayMessageModel>(cloudResponse);
+            GatewayMessageModel responseModel = JsonConvert.DeserializeObject<GatewayMessageModel>(cloudResponse);
             if (responseModel.content == "true")
             {
                 return true;
@@ -123,14 +123,14 @@ namespace CloudServer.UtilComponent
             return false;
         }
 
-        public IReadOnlyList<GateWayModel> getGateWayList()
+        public IReadOnlyList<GatewayModel> getGatewayList()
         {
-            return GateWayList;
+            return GatewayList;
         }
 
-        public void removeGateWay(GateWayModel gateway)
+        public void removeGateway(GatewayModel gateway)
         {
-            GatewayDictionary.Remove(gateway.gateWayId);
+            GatewayDictionary.Remove(gateway.gatewayId);
         }
     }
 }

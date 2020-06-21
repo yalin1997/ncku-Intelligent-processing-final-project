@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace GateWay.Models
 {
-    public class gateWayMessageModel
+    public class GatewayMessageModel
     {
-        public string gateWayId { get; set; }
+        public string gatewayId { get; set; }
         public int messageType { get; set; }
         public DateTime messageTime { get; set; }
         public string content { get; set; }

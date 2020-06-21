@@ -13,13 +13,13 @@ namespace GateWay.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class fireAlarmController : ControllerBase
+    public class FireAlarmController : ControllerBase
     {
         private readonly IHttpClientFactory _clientFactory;
         private readonly IAlarmControl _alarmControl;
         private readonly IAuthenticateControl _authControl;
         private readonly IConfiguration Configuration;
-        public fireAlarmController(IHttpClientFactory clientFactory , IAlarmControl fireAlarmControl, IAuthenticateControl authControl , IConfiguration configuration)
+        public FireAlarmController(IHttpClientFactory clientFactory , IAlarmControl fireAlarmControl, IAuthenticateControl authControl , IConfiguration configuration)
         {
             _clientFactory = clientFactory;
             _alarmControl = fireAlarmControl;
@@ -28,7 +28,7 @@ namespace GateWay.Controllers
         }
         // sensor to gw
         [HttpPost]
-        public IActionResult getFireAlarm([FromBody]accountPasswordModel deviceMessage)//(fireAlarmModel fireAlarm)
+        public IActionResult getFireAlarm([FromBody]AccountPasswordModel deviceMessage)//(fireAlarmModel fireAlarm)
         {
             if (_authControl.authDeviceInfo(deviceMessage))
             {
@@ -36,16 +36,16 @@ namespace GateWay.Controllers
                 bool result;
                 do
                 {
-                    result = SendAlarmToCloud((int)messageCode.gateWayCode.fireAlarm, DateTime.Now);
+                    result = SendAlarmToCloud((int)MessageCode.gatewayCode.fireAlarm, DateTime.Now);
                 } while (!result);
-                return new OkObjectResult(new gateWayMessageModel { gateWayId = _alarmControl.getId(), messageType = (int)messageCode.gateWayCode.alarmResponse , content = "true" });
+                return new OkObjectResult(new GatewayMessageModel { gatewayId = _alarmControl.getId(), messageType = (int)MessageCode.gatewayCode.alarmResponse , content = "true" });
 
             }
             return new ObjectResult("auth error");
         }
         //停止火災警報
         [HttpPost]
-        public IActionResult fireAlarmStop([FromBody] accountPasswordModel deviceMessage)//(fireAlarmModel fireAlarm)
+        public IActionResult fireAlarmStop([FromBody] AccountPasswordModel deviceMessage)//(fireAlarmModel fireAlarm)
         {
             if (_authControl.authDeviceInfo(deviceMessage))
             {
@@ -53,41 +53,41 @@ namespace GateWay.Controllers
                 bool result;
                 do
                 {
-                    result = SendAlarmToCloud((int)messageCode.gateWayCode.stopAlarm, DateTime.Now);
+                    result = SendAlarmToCloud((int)MessageCode.gatewayCode.stopAlarm, DateTime.Now);
                 } while (!result);
-                return new OkObjectResult(new gateWayMessageModel { gateWayId = _alarmControl.getId(), messageType = (int)messageCode.gateWayCode.alarmResponse, content = "true" });
+                return new OkObjectResult(new GatewayMessageModel { gatewayId = _alarmControl.getId(), messageType = (int)MessageCode.gatewayCode.alarmResponse, content = "true" });
             }
             return new ObjectResult("auth error");
         }
         // 收不到
         [HttpPost]
-        public IActionResult getFireAlarmFromCloud([FromBody] gateWayMessageModel cloudMessage)//(fireAlarmModel fireAlarm)
+        public IActionResult getFireAlarmFromCloud([FromBody] GatewayMessageModel cloudMessage)//(fireAlarmModel fireAlarm)
         {
             _alarmControl.setAlarm();
-             return new OkObjectResult(new gateWayMessageModel { gateWayId = _alarmControl.getId(), messageType = (int)messageCode.gateWayCode.alarmResponse, content = "true" });
+             return new OkObjectResult(new GatewayMessageModel { gatewayId = _alarmControl.getId(), messageType = (int)MessageCode.gatewayCode.alarmResponse, content = "true" });
         }
         [HttpPost]
         // 收不到
-        public IActionResult cloudFireAlarm([FromBody] accountPasswordModel cloudMessage)
+        public IActionResult cloudFireAlarm([FromBody] AccountPasswordModel cloudMessage)
         {
             if (_authControl.authDeviceInfo(cloudMessage))
             {
                 _alarmControl.setAlarm();
-                return new OkObjectResult(new gateWayMessageModel { gateWayId = _alarmControl.getId(), messageType = (int)messageCode.gateWayCode.alarmResponse, content = "true" });
+                return new OkObjectResult(new GatewayMessageModel { gatewayId = _alarmControl.getId(), messageType = (int)MessageCode.gatewayCode.alarmResponse, content = "true" });
             }
-            return new OkObjectResult(new gateWayMessageModel { gateWayId = _alarmControl.getId(), messageType = (int)messageCode.gateWayCode.alarmResponse, content = "false" });
+            return new OkObjectResult(new GatewayMessageModel { gatewayId = _alarmControl.getId(), messageType = (int)MessageCode.gatewayCode.alarmResponse, content = "false" });
         }
         // 給sensor問
         [HttpPost]
-        public IActionResult SensorAlarm([FromBody] accountPasswordModel deviceMessage)
+        public IActionResult SensorAlarm([FromBody] AccountPasswordModel deviceMessage)
         {
             if (_authControl.authDeviceInfo(deviceMessage))
             {
                 if (_alarmControl.isAlarm())
                 {
-                    return new OkObjectResult(new gateWayMessageModel { gateWayId = _alarmControl.getId(), messageType = (int)messageCode.gateWayCode.sensorAlarm, content = "true" });
+                    return new OkObjectResult(new GatewayMessageModel { gatewayId = _alarmControl.getId(), messageType = (int)MessageCode.gatewayCode.sensorAlarm, content = "true" });
                 }
-                return new OkObjectResult(new gateWayMessageModel { gateWayId = _alarmControl.getId(), messageType = (int)messageCode.gateWayCode.sensorAlarm, content = "false" });
+                return new OkObjectResult(new GatewayMessageModel { gatewayId = _alarmControl.getId(), messageType = (int)MessageCode.gatewayCode.sensorAlarm, content = "false" });
             }
             return new ObjectResult("auth error");
         }
@@ -95,7 +95,7 @@ namespace GateWay.Controllers
         private bool SendAlarmToCloud( int type , DateTime time)
         {
             var cloudHttpSender = _clientFactory.CreateClient();
-            gateWayMessageModel postData = new gateWayMessageModel() { gateWayId = _alarmControl.getId(), messageType = type, messageTime = time };
+            GatewayMessageModel postData = new GatewayMessageModel() { gatewayId = _alarmControl.getId(), messageType = type, messageTime = time };
             // 將 data 轉為 json
             string json = JsonConvert.SerializeObject(postData);
             // 將轉為 string 的 json 依編碼並指定 content type 存為 httpcontent
@@ -103,7 +103,7 @@ namespace GateWay.Controllers
             // 發出 post 並取得結果
             HttpResponseMessage response = cloudHttpSender.PostAsync(Configuration["CloudUri"] + "/api/CloudService/getFireAlarmGateWay", contentPost).GetAwaiter().GetResult();
             string cloudResponse = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-            cloudResponseModel responseModel = JsonConvert.DeserializeObject<cloudResponseModel>(cloudResponse);
+            CloudResponseModel responseModel = JsonConvert.DeserializeObject<CloudResponseModel>(cloudResponse);
             if (responseModel.content == "true")
             {
                 return true;

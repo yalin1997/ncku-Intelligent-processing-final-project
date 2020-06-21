@@ -20,53 +20,53 @@ namespace CloudServer.Controllers
         }
         // gw 火災訊號
         [HttpPost]
-        public IActionResult  getFireAlarmGateWay([FromBody]GateWayMessageModel gatewayMessage)
+        public IActionResult  getFireAlarmGateWay([FromBody]GatewayMessageModel gatewayMessage)
         {
-            string gateWayId = gatewayMessage.gateWayId;
-            GateWayModel alarmGateWay;
-            _gatewayControl.findGateWay(gateWayId, out alarmGateWay);
+            string gatewayId = gatewayMessage.gatewayId;
+            GatewayModel alarmGateWay;
+            _gatewayControl.findGateway(gatewayId, out alarmGateWay);
             if (gatewayMessage.messageType == 7)
             {
                 alarmGateWay.isAlarm = false;
             }
             else
                 alarmGateWay.isAlarm = true;
-            return new OkObjectResult(new GateWayMessageModel { gateWayId = gateWayId, content = "true" });
+            return new OkObjectResult(new GatewayMessageModel { gatewayId = gatewayId, content = "true" });
         }
         // 手機找到最近gw
         [HttpPost]
         public IActionResult findGayWay([FromBody]MobileDevicesModel mobile)
         {
-            GateWayModel cloesetGateWay;
-            cloesetGateWay = _gatewayControl.findClosestGateWay(mobile);
-            return new OkObjectResult(new ReturnGateWayModel { gateWayId = cloesetGateWay.gateWayId, messageType = (int)messageCode.gateWayCode.gateWayReponse, gateWayUri = cloesetGateWay.gateWayUri , isAlarm = cloesetGateWay.isAlarm });
+            GatewayModel cloesetGateway;
+            cloesetGateway = _gatewayControl.findClosestGateway(mobile);
+            return new OkObjectResult(new ReturnGatewayModel { gateWayId = cloesetGateway.gatewayId, messageType = (int)messageCode.gateWayCode.gateWayReponse, gatewayUri = cloesetGateway.gatewayUri , isAlarm = cloesetGateway.isAlarm });
         }
         // gw 註冊
         [HttpPost]
-        public IActionResult gateWayRegister([FromBody]GateWayModel gatewayInfo)
+        public IActionResult gateWayRegister([FromBody]GatewayModel gatewayInfo)
         {
             gatewayInfo.UpdateTime = DateTime.Now;
-            bool result =  _gatewayControl.gateWayRegister(gatewayInfo);
+            bool result =  _gatewayControl.gatewayRegister(gatewayInfo);
             return new OkObjectResult(new CloudResponseModel {messageType = (int)messageCode.gateWayCode.registerResponse, content = result.ToString() });
         }
         // 網頁控制點火
         [HttpPost]
-        public IActionResult userControlFire(string onFireGateWayId)
+        public IActionResult userControlFire(string onFireGatewayId)
         {
-            GateWayModel alarmGateWay;
+            GatewayModel alarmGateway;
             bool result;
-            result = _gatewayControl.findGateWay(onFireGateWayId, out alarmGateWay);
+            result = _gatewayControl.findGateway(onFireGatewayId, out alarmGateway);
             if (result)
             {
-                alarmGateWay.isAlarm = true;
+                alarmGateway.isAlarm = true;
             }
-            return new OkObjectResult(new ReturnGateWayModel { gateWayId = onFireGateWayId, messageType = (int)messageCode.gateWayCode.gateWayReponse, gateWayUri = alarmGateWay.gateWayUri, isAlarm = alarmGateWay.isAlarm });
+            return new OkObjectResult(new ReturnGatewayModel { gateWayId = onFireGatewayId, messageType = (int)messageCode.gateWayCode.gateWayReponse, gatewayUri = alarmGateway.gatewayUri, isAlarm = alarmGateway.isAlarm });
         }
         // 取得gw List
         [HttpPost]
         public IActionResult getGateWayList()
         {
-            return new JsonResult(_gatewayControl.getGateWayList());
+            return new JsonResult(_gatewayControl.getGatewayList());
         }
     }
 }

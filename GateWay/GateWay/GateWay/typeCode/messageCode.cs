@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace GateWay.typeCode
 {
-    public class messageCode
+    public class MessageCode
     {
-        public enum gateWayCode
+        public enum gatewayCode
         {
             fireAlarm = 1,
             alive = 2,
             alarmResponse = 3,
             sensorAlarm = 4,
-            gateWayReponse = 5,
+            gatewayReponse = 5,
             registerResponse = 6,
             stopAlarm = 7
         }

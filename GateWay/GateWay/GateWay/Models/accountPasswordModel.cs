@@ -5,11 +5,11 @@ using System.Text;
 
 namespace GateWay.Models
 {
-    public class accountPasswordModel
+    public class AccountPasswordModel
     {
         public string account { get; set; }
         public string password { get; set;}
-        public bool Auth(accountPasswordModel obj)
+        public bool Auth(AccountPasswordModel obj)
         {
             if (this.account.Equals(obj.account) && this.password.Equals(obj.password))
             {
