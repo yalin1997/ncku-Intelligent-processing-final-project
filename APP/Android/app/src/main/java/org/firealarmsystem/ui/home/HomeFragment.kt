@@ -23,6 +23,7 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import kotlinx.android.synthetic.main.fragment_home.*
 import org.firealarmsystem.R
+import org.json.JSONArray
 import org.json.JSONObject
 import java.util.*
 import kotlin.concurrent.schedule
@@ -80,21 +81,32 @@ class HomeFragment : Fragment() {
         requestQueue = Volley.newRequestQueue(this.context)
 
         val obj = JSONObject()
-        obj.put("longitudee", 22.9f)
-        obj.put("latitude", 120.2f)
         updateTimerTask  = updateTimer.schedule( 0 , 2000 ){
-            val jsonRequest = JsonObjectRequest(Request.Method.POST, "https://1082-im.biyasu.com/api/CloudService/findGayWay", obj ,
+            val jsonRequest = StringRequest(Request.Method.POST, "https://1082-im.biyasu.com/api/CloudService/getGateWayList",
                 Response.Listener { response ->
+                    Log.i("response" , response)
+                    val array = JSONArray(response.toString());
+                    val tempList = ArrayList<String>()
+                    var isAlarm = false
+                    for(i in 0 until array.length()){
+                        val item = array.getJSONObject(i);
+                        if(item.getBoolean("isActive")){
+                            tempList.add(item.getString("gateWayId"))
 
-                    homeViewModel.gateways.postValue(arrayListOf(response.getString("gateWayId")))
-                    Log.i("response" , response.toString())
-                    if(response.getBoolean("isAlarm")){
+                            if(item.getBoolean("isAlarm")){
+                                isAlarm = true
+                            }
+                        }
+                    }
+
+                    if(isAlarm){
                         if(!homeViewModel.isAlarm.value!!) {
                             homeViewModel.isAlarm.postValue(true)
                         }
                     }else {
                         homeViewModel.isAlarm.postValue(false)
                     }
+                    homeViewModel.gateways.postValue(tempList)
                 },
                 Response.ErrorListener { error ->
                     Log.e("response" , error.toString())
